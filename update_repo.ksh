@@ -6,7 +6,7 @@ if (( $? == 0 )) ; then
 else
  set ACTION_PI_SETUP_RST = false 
 fi
-echo $ACTION_PI_SETUP_RST
+echo "($ACTION_PI_SETUP_RST)"
 
 git push --set-upstream origin $1 
 git add .
