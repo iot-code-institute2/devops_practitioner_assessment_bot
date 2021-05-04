@@ -7,7 +7,7 @@ on:
 
 env:
   BRANCH_REGX: v[11].[-1-10]+.[-1-10]+
-  STUDENT_CODEBASE: ci-mary-j-jenkins.yml
+  STUDENT_CODEBASE: marys_ci_cd_pipeline.yml
   # Checks
   ACTION_PI_SETUP: actions/setup-python
   RUNS_ON: ubuntu-latest
