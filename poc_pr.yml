@@ -1,0 +1,20 @@
+name: poc_assessor_checks_ci
+# heroku authorizations:create
+on:
+  pull_request:
+    types: [push]
+  # push:
+
+env:
+  # Templates
+  BRANCH_REGX: v[11].[-1-10]+.[-1-10]+
+
+jobs:
+  job1:
+    if: ${{ github.event_name == 'pull_request' && github.ref != 'refs/heads/main' }}
+    name: JOB - Setup py enviroment
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout me code
+      uses: actions/checkout@v2
