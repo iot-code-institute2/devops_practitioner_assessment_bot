@@ -29,14 +29,14 @@ jobs:
         grep "${{env.ACTION_PI_SETUP}}" ${{env.STUDENT_CODEBASE}}
         YN=$?
         echo $Y
-        [[ $YN == 0 ]] && ACTION_PI_SETUP_RST = true
+        [[ $YN == 0 ]] && $ACTION_PI_SETUP_RST = true
 
     - name: check if runner is ubuntu
       run: |
         grep ${{env.RUNS_ON}} ${{env.STUDENT_CODEBASE}}
         YN=$?
         echo $Y
-        [[ $YN == 0  ]] && RUNS_ON_RST = true
+        [[ $YN == 0  ]] && $RUNS_ON_RST = true
 
   comms_slack:
     needs: teacher_assessment_time
