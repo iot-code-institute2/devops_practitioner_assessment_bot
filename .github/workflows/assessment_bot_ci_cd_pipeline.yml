@@ -28,14 +28,14 @@ jobs:
       run: |
         grep "${{env.ACTION_PI_SETUP}}" ${{env.STUDENT_CODEBASE}}
         if (( $? == 0 )) ; then
-         set ACTION_PI_SETUP_RST = true
+          ACTION_PI_SETUP_RST=true
         fi
 
     - name: check if runner is ubuntu
       run: |
         grep ${{env.RUNS_ON}} ${{env.STUDENT_CODEBASE}}
         if (( $? == 0 )) ; then
-         set RUNS_ON_RST = true
+          RUNS_ON_RST=true
         fi
 
     - name: compile report
