@@ -41,9 +41,10 @@ jobs:
     - name: compile report
       run: |
         echo "STUDENT_EMAIL $STUDENT_EMAIL" > grades.md
-        echo "Date " >> grades.md
+        echo "Date: $(date) " >> grades.md
         echo "Runner Check: $RUNS_ON_RST" >> grades.md
         echo "PI Check $ACTION_PI_SETUP_RST" >> grades.md
+        cat grades.md
 
     - name: archive student results
       uses: actions/upload-artifact@v2
@@ -53,16 +54,16 @@ jobs:
         retention-days: 5
 
 
-  comms_slack:
-    needs: teacher_assessment_time
-    name: JOB - Slack Update
-    runs-on: ubuntu-latest
-    steps:
-    - name: notify-team
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-      env:
-        SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
-      if: always() # Pick up events even if the job fails or is canceled.
+  # comms_slack:
+  #   needs: teacher_assessment_time
+  #   name: JOB - Slack Update
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: notify-team
+  #     uses: 8398a7/action-slack@v3
+  #     with:
+  #       status: ${{ job.status }}
+  #       fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+  #     env:
+  #       SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
+  #     if: always() # Pick up events even if the job fails or is canceled.
