@@ -1,0 +1,53 @@
+name: poc_assessor_checks_ci
+# heroku authorizations:create
+on:
+  pull_request:
+    types: [push]
+  # push:
+
+env:
+  BRANCH_REGX: v[11].[-1-10]+.[-1-10]+
+  STUDENT_CODEBASE: ci-mary-j-jenkins.yml
+  ACTION_PI_SETUP: false
+  RUNS_ON: ubuntu-latest
+
+jobs:
+  teacher_assessment_time:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    name: JOB - Setup py enviroment
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout me code
+      uses: actions/checkout@v2
+
+    - name: check if python action is used
+      runs: |
+        grep ${{env.ACTION_PI_SETUP}} ${{env.STUDENT_CODEBASE}}
+        YN=$?
+        echo $Y
+        [[ $YN == 0  ]] && env.ACTION_PI_SETUP = true
+
+    - name: check if runner is ubuntu
+      runs: |
+        grep ${{env.RUNS_ON}} ci-mary-j-jenkins.yml
+        YN=$?
+        echo $Y
+        [[ $YN == 0  ]] && env.ACTION_RUNS_ON = true
+
+
+
+  comms_slack:
+    needs: teacher_assessment_time
+    name: JOB - Slack Update
+    runs-on: ubuntu-latest
+    steps:
+    - name: notify-team
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+      env:
+        # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
+      if: always() # Pick up events even if the job fails or is canceled.
