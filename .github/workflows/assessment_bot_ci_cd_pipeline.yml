@@ -2,8 +2,8 @@ name: poc_assessor_checks_ci
 # heroku authorizations:create
 on:
   pull_request:
-    types: [opened, created, edited]
-  # push:
+    types: [opened,reopened]
+  push:
 
 env:
   BRANCH_REGX: v[11].[-1-10]+.[-1-10]+
