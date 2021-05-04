@@ -22,14 +22,14 @@ jobs:
       uses: actions/checkout@v2
 
     - name: check if python action is used
-      runs: |
+      run: |
         grep ${{env.ACTION_PI_SETUP}} ${{env.STUDENT_CODEBASE}}
         YN=$?
         echo $Y
         [[ $YN == 0  ]] && env.ACTION_PI_SETUP = true
 
     - name: check if runner is ubuntu
-      runs: |
+      run: |
         grep ${{env.RUNS_ON}} ci-mary-j-jenkins.yml
         YN=$?
         echo $Y
