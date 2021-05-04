@@ -67,6 +67,8 @@ jobs:
         git add .
         git commit -m "deleting students submission"
         git push origin HEAD:main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   # comms_slack:
   #   needs: teacher_assessment_time
