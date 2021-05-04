@@ -38,6 +38,20 @@ jobs:
          set RUNS_ON_RST = true
         fi
 
+  save_results:
+    - name: compile report
+      run: |
+        echo "STUDENT_EMAIL $STUDENT_EMAIL" > grades.md
+        echo "Date " >> grades.md
+        echo "Runner Check: $RUNS_ON_RST" >> grades.md
+        echo "PI Check $ACTION_PI_SETUP_RST" >> grades.md
+
+    - name: archive student results
+      uses: actions/upload-artifact@v2
+      with:
+        name: students_assessment
+        path: ./grades.md
+
   comms_slack:
     needs: teacher_assessment_time
     name: JOB - Slack Update
