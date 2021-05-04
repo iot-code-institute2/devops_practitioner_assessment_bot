@@ -10,14 +10,14 @@ env:
   STUDENT_CODEBASE: ci-mary-j-jenkins.yml
   # Checks
   ACTION_PI_SETUP: actions/setup-python
-  ACTION_PI_SETUP_RST: false
+  ACTION_PI_SETUP_RST: -1
   RUNS_ON: ubuntu-latest
-  RUNS_ON_RST: false
+  RUNS_ON_RST: -1
 
 jobs:
   teacher_assessment_time:
     if: ${{ github.ref == 'refs/heads/main' }}
-    name: JOB - Setup py enviroment
+    name: JOB - Devops Practitioner Assessment Bot
     runs-on: ubuntu-latest
 
     steps:
