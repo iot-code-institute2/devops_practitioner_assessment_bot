@@ -27,16 +27,16 @@ jobs:
     - name: check if python action is used.
       run: |
         grep "${{env.ACTION_PI_SETUP}}" ${{env.STUDENT_CODEBASE}}
-        YN=$?
-        echo $Y
-        [[ $YN == 0 ]] && $ACTION_PI_SETUP_RST = true
+        if [ $? -eq 0 ] ; then
+         set ACTION_PI_SETUP_RST = true
+        fi
 
     - name: check if runner is ubuntu
       run: |
         grep ${{env.RUNS_ON}} ${{env.STUDENT_CODEBASE}}
-        YN=$?
-        echo $Y
-        [[ $YN == 0  ]] && $RUNS_ON_RST = true
+        if [ $? -eq 0 ] ; then
+         set RUNS_ON_RST = true
+        fi
 
   comms_slack:
     needs: teacher_assessment_time
