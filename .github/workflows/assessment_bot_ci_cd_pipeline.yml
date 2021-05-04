@@ -22,11 +22,17 @@ jobs:
     - name: checkout me code
       uses: actions/checkout@v2
 
+    - name: compile report
+      run: |
+        echo "STUDENT_EMAIL $STUDENT_EMAIL" > grades.md
+        echo "Date: $(date) " >> grades.md
+
     - name: check if python action is used.
       run: |
         grep "${{env.ACTION_PI_SETUP}}" ${{env.STUDENT_CODEBASE}}
         if (( $? == 0 )) ; then
           ACTION_PI_SETUP_RST=true
+          echo "PI Check $ACTION_PI_SETUP_RST" >> grades.md
         fi
 
     - name: check if runner is ubuntu
@@ -34,15 +40,8 @@ jobs:
         grep ${{env.RUNS_ON}} ${{env.STUDENT_CODEBASE}}
         if (( $? == 0 )) ; then
           RUNS_ON_RST=true
+          echo "Runner Check: $RUNS_ON_RST" >> grades.md
         fi
-
-    - name: compile report
-      run: |
-        echo "STUDENT_EMAIL $STUDENT_EMAIL" > grades.md
-        echo "Date: $(date) " >> grades.md
-        echo "Runner Check: $RUNS_ON_RST" >> grades.md
-        echo "PI Check $ACTION_PI_SETUP_RST" >> grades.md
-        cat grades.md
 
     - name: archive student results
       uses: actions/upload-artifact@v2
