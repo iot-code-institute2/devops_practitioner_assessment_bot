@@ -2,9 +2,9 @@ name: poc_assessor_checks_ci
 # heroku authorizations:create
 on:
   pull_request:
-    types: [pull_request]
+    types: [created, edited]
   # push:
-
+gt
 env:
   BRANCH_REGX: v[11].[-1-10]+.[-1-10]+
   STUDENT_CODEBASE: ci-mary-j-jenkins.yml
