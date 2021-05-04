@@ -57,17 +57,23 @@ jobs:
         path: ./grades.md
         retention-days: 5
 
+    - name: clean up
+      run: |
+        rm ${{env.STUDENT_CODEBASE}}
+        git add .
+        git commit -m "deleting students submission"
+        git push
 
-  comms_slack:
-    needs: teacher_assessment_time
-    name: JOB - Slack Update
-    runs-on: ubuntu-latest
-    steps:
-    - name: notify-team
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-      env:
-        SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
-      if: always() # Pick up events even if the job fails or is canceled.
+  # comms_slack:
+  #   needs: teacher_assessment_time
+  #   name: JOB - Slack Update
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: notify-team
+  #     uses: 8398a7/action-slack@v3
+  #     with:
+  #       status: ${{ job.status }}
+  #       fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+  #     env:
+  #       SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
+  #     if: always() # Pick up events even if the job fails or is canceled.
