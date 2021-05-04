@@ -1,0 +1,32 @@
+name: mary_ci_pipeline
+on: [push]
+
+env:
+  APP_NAME: ci-ping-pong
+  GEO: eu
+  PIPELINE: coding-institute-pipeline
+
+jobs:
+  # Master Only
+  job1:
+    name: JOB - To setup a python 3.7 enviroment
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+
+    - name: get os version
+      run: |
+        uname -a >> release.md
+
+    - name: get latest pip version
+      run: |
+        python -m pip install --upgrade pip
+        pip -V >> release.md
+
+    - name: get exact py version
+      run: |
+        python -V >> release.md
