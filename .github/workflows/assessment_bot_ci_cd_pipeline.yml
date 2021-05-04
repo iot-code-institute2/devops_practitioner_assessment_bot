@@ -8,8 +8,11 @@ on:
 env:
   BRANCH_REGX: v[11].[-1-10]+.[-1-10]+
   STUDENT_CODEBASE: ci-mary-j-jenkins.yml
-  ACTION_PI_SETUP: false
+  # Checks
+  ACTION_PI_SETUP: actions/setup-python
+  ACTION_PI_SETUP_RST: false
   RUNS_ON: ubuntu-latest
+  RUNS_ON_RST: false
 
 jobs:
   teacher_assessment_time:
@@ -23,19 +26,17 @@ jobs:
 
     - name: check if python action is used
       run: |
-        grep ${{env.ACTION_PI_SETUP}} ${{env.STUDENT_CODEBASE}}
+        grep "${{env.ACTION_PI_SETUP}}" ${{env.STUDENT_CODEBASE}}
         YN=$?
         echo $Y
-        [[ $YN == 0  ]] && env.ACTION_PI_SETUP = true
+        [[ $YN == 0 ]] && env.ACTION_PI_SETUP_RST = true
 
     - name: check if runner is ubuntu
       run: |
-        grep ${{env.RUNS_ON}} ci-mary-j-jenkins.yml
+        grep ${{env.RUNS_ON}} ${{env.STUDENT_CODEBASE}}
         YN=$?
         echo $Y
-        [[ $YN == 0  ]] && env.ACTION_RUNS_ON = true
-
-
+        [[ $YN == 0  ]] && env.RUNS_ON_RST = true
 
   comms_slack:
     needs: teacher_assessment_time
@@ -46,8 +47,7 @@ jobs:
       uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
       env:
-        # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
         SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
       if: always() # Pick up events even if the job fails or is canceled.
