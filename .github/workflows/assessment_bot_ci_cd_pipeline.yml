@@ -14,7 +14,7 @@ env:
 
 jobs:
   teacher_assessment_time:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    # if: ${{ github.ref == 'refs/heads/main' }}
     name: JOB - Devops Practitioner Assessment Bot
     runs-on: ubuntu-latest
 
