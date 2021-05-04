@@ -6,8 +6,8 @@ on:
   push:
 
 env:
-  BRANCH_REGX: v[11].[-1-10]+.[-1-10]+
   STUDENT_CODEBASE: marys_ci_cd_pipeline.yml
+
   # Checks
   ACTION_PI_SETUP: actions/setup-python
   RUNS_ON: ubuntu-latest
@@ -18,16 +18,21 @@ jobs:
     name: JOB - Devops Practitioner Assessment Bot
     runs-on: ubuntu-latest
 
+#
+#
+# Start compiling report
+#
+#
     steps:
     - name: checkout me code
       uses: actions/checkout@v2
 
-    - name: compile report
+    - name: report header
       run: |
         echo "STUDENT_EMAIL $STUDENT_EMAIL" > grades.md
         echo "Date: $(date) " >> grades.md
 
-    - name: check if python action is used.
+    - name: check#1 is python action is used.
       run: |
         grep "${{env.ACTION_PI_SETUP}}" ${{env.STUDENT_CODEBASE}}
         if (( $? == 0 )) ; then
@@ -36,7 +41,7 @@ jobs:
           echo "PI Check : FAILED" >> grades.md
         fi
 
-    - name: check if runner is ubuntu
+    - name: check# is runner ubuntu
       run: |
         grep ${{env.RUNS_ON}} ${{env.STUDENT_CODEBASE}}
         if (( $? == 0 )) ; then
