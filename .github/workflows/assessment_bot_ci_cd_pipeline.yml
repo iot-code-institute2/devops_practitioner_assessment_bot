@@ -24,7 +24,7 @@ jobs:
     - name: checkout me code
       uses: actions/checkout@v2
 
-    - name: check if python action is used
+    - name: check if python action is used.
       run: |
         grep "${{env.ACTION_PI_SETUP}}" ${{env.STUDENT_CODEBASE}}
         YN=$?
