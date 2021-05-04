@@ -38,7 +38,6 @@ jobs:
          set RUNS_ON_RST = true
         fi
 
-  save_results:
     - name: compile report
       run: |
         echo "STUDENT_EMAIL $STUDENT_EMAIL" > grades.md
@@ -51,6 +50,8 @@ jobs:
       with:
         name: students_assessment
         path: ./grades.md
+        retention-days: 5
+
 
   comms_slack:
     needs: teacher_assessment_time
