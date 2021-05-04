@@ -62,11 +62,12 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         rm ${{env.STUDENT_CODEBASE}}
+        git remote set-url origin https://github.com/iot-code-institute2/devops_practitioner_assessment_bot.git
         git config --global user.email "tonyennis@yahoo.com"
         git config --global user.name "Anthony Ennis"
         git add .
         git commit -m "deleting students submission"
-        git push origin HEAD:main
+        git push origin main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
