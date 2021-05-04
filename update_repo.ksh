@@ -1,9 +1,6 @@
 #!/bin/bash 
 
 grep "actions/setup-python" ci-mary-j-jenkins.yml
-
-ACTION=-1
-echo $ACTION_PI_SETUP_RST
 if (( $? == 0 )) ; then  
  ACTION=true 
 else
