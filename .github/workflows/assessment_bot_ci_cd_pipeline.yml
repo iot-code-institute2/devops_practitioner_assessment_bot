@@ -2,7 +2,7 @@ name: poc_assessor_checks_ci
 # heroku authorizations:create
 on:
   pull_request:
-    types: [created, edited]
+    types: [opened, created, edited]
   # push:
 
 env:
