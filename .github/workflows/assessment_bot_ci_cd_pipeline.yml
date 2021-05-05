@@ -7,6 +7,7 @@ on:
 
 env:
   STUDENT_CODEBASE: marys_ci_cd_pipeline.yml
+  RULES_ENGINE: iot-code-institute2/rules_engline
 jobs:
   teacher_assessment_time:
     # if: ${{ github.ref == 'refs/heads/main' }}
@@ -32,6 +33,12 @@ jobs:
       run: |
           grep STUDENT_EMAIL ${{env.STUDENT_CODEBASE}} >> grade.md
           grep STUDENT_NAME ${{env.STUDENT_CODEBASE}} >> grade.md
+
+    - name: checkout assessment rules
+      uses: actions/checkout@v2
+      with:
+        repository: iot-code-institute2/rules_engline
+        path: rules
 
     - name: execute assessment rules engine
       run: |
@@ -74,16 +81,16 @@ jobs:
         cat grades.md | git commit -F -
         rm grades.md
 
-  # comms_slack:
-  #   needs: teacher_assessment_time
-  #   name: JOB - Slack Update
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: notify-team
-  #     uses: 8398a7/action-slack@v3
-  #     with:
-  #       status: ${{ job.status }}
-  #       fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-  #     env:
-  #       SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
-  #     if: always() # Pick up events even if the job fails or is canceled.
+  comms_slack:
+    needs: teacher_assessment_time
+    name: JOB - Slack Update
+    runs-on: ubuntu-latest
+    steps:
+    - name: notify-team
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+      env:
+        SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
+      if: always() # Pick up events even if the job fails or is canceled.
