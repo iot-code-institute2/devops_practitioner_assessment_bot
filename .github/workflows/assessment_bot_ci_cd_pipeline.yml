@@ -22,10 +22,16 @@ jobs:
     - name: checkout me code
       uses: actions/checkout@v2
 
+
     - name: report header
       run: |
-        echo "STUDENT_EMAIL $STUDENT_EMAIL" > grades.md
-        echo "Date: $(date) " >> grades.md
+        echo "**** Automated Gradid Card *****" > grades.md
+        echo "Submission Date: $(date) " >> grades.md
+
+    - name: student identifiers
+      run: |
+          grep STUDENT_EMAIL ${{env.STUDENT_CODEBASE}} >> grade.md
+          grep STUDENT_NAME ${{env.STUDENT_CODEBASE}} >> grade.md
 
     - name: execute assessment rules engine
       run: |
@@ -39,10 +45,10 @@ jobs:
         while read comment check expected_result
         do
           # grep "$check" ${{env.STUDENT_CODEBASE}} || true
-          grep "$check" ${{env.STUDENT_CODEBASE}} || true
+          grep "$check" ${{env.STUDENT_CODEBASE}}
           echo $?
 
-          if (( $? == 0 )) ; then
+          if (( $? == $expected_result )) ; then
             echo "$comment : PASSED" >> grades.md
           else
             echo "$comment : FAILED" >> grades.md
@@ -66,9 +72,7 @@ jobs:
         git config --global user.email "tonyennis@yahoo.com"
         git config --global user.name "Anthony Ennis"
         git add .
-        # add commit message that matches grades
-        # update call to slack to be fancy message ...
-        git commit -m "deleting students submission"
+        cat grades.md | git commit -F -
 
   # comms_slack:
   #   needs: teacher_assessment_time
