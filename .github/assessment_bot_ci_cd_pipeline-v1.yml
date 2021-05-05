@@ -32,21 +32,23 @@ jobs:
         echo "STUDENT_EMAIL $STUDENT_EMAIL" > grades.md
         echo "Date: $(date) " >> grades.md
 
-    - name: execute assessment rules engine
+    - name: check#1 is python action is used.
       run: |
-        IFS=,
-        while read comment check expected_result
-        do
-          grep "$check" ${{env.STUDENT_CODEBASE}}
-          echo $?
+        grep "${{env.ACTION_PI_SETUP}}" ${{env.STUDENT_CODEBASE}}
+        if (( $? == 0 )) ; then
+          echo "PI Check : PASSED" >> grades.md
+        else
+          echo "PI Check : FAILED" >> grades.md
+        fi
 
-          if (( $? == 0 )) ; then
-            echo "PI Check : PASSED" >> grades.md
-          else
-            echo "PI Check : FAILED" >> grades.md
-          fi
-
-        done < rules-pr.csv
+    - name: check# is runner ubuntu
+      run: |
+        grep ${{env.RUNS_ON}} ${{env.STUDENT_CODEBASE}}
+        if (( $? == 0 )) ; then
+          echo "Runner Check: PASSED" >> grades.md
+        else
+          echo "Runner Check: FAILED" >> grades.md
+        fi
 
     - name: archive student results
       uses: actions/upload-artifact@v2
