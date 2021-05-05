@@ -51,16 +51,9 @@ jobs:
         IFS=","
         while read comment check expected_result
         do
-          grep "$check" ${{env.STUDENT_CODEBASE}} || true
-          # grep "$check" ${{env.STUDENT_CODEBASE}}
-          echo "INF: RST($?)"
-
-          if (( $? == 0 )) ; then
-            echo "$comment : PASSED" >> grades.md
-          else
-            echo "$comment : FAILED" >> grades.md
-          fi
-
+          # grep "$check" ${{env.STUDENT_CODEBASE}} || true
+          # echo "INF: RST($?)"
+          grep "$check" ${{env.STUDENT_CODEBASE}} && echo "$comment : PASSED" >> grades.md || echo "$comment : FAILED" >> grades.md
         done < rules/rules-pr.csv
 
     - name: archive student results
