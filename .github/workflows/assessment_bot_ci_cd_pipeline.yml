@@ -30,7 +30,11 @@ jobs:
     - name: execute assessment rules engine
       run: |
         echo "INF: Path $(pwd)"
-        ls -lrt
+        ls -lrta
+        echo "INF: Rules Listing"
+        cat rules-pr.csv
+
+        echo "INF: Check rules..."
         IFS=","
         while read comment check expected_result
         do
