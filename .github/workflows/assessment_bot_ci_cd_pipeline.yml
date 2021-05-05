@@ -7,11 +7,6 @@ on:
 
 env:
   STUDENT_CODEBASE: marys_ci_cd_pipeline.yml
-
-  # Checks
-  ACTION_PI_SETUP: actions/setup-python
-  RUNS_ON: ubuntu-latest
-
 jobs:
   teacher_assessment_time:
     # if: ${{ github.ref == 'refs/heads/main' }}
@@ -34,7 +29,9 @@ jobs:
 
     - name: execute assessment rules engine
       run: |
-        IFS=,
+        echo "INF: Path $(pwd)"
+        ls -lrt
+        IFS=","
         while read comment check expected_result
         do
           grep "$check" ${{env.STUDENT_CODEBASE}}
