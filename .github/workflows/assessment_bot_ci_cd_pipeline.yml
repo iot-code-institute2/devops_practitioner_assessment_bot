@@ -53,6 +53,9 @@ jobs:
         do
           # grep "$check" ${{env.STUDENT_CODEBASE}} || true
           # echo "INF: RST($?)"
+          echo "CHECK ($check)"
+          echo "CB (${{env.STUDENT_CODEBASE}})
+          
           grep "$check" ${{env.STUDENT_CODEBASE}} && echo "$comment : PASSED" >> grades.md || echo "$comment : FAILED" >> grades.md
         done < rules/rules-pr.csv
 
