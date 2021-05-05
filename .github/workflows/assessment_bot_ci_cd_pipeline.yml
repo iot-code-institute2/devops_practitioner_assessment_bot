@@ -45,7 +45,7 @@ jobs:
         echo "INF: Path $(pwd)"
         ls -lrta
         echo "INF: Rules Listing"
-        cat rules-pr.csv
+        cat rules/rules-pr.csv
 
         echo "INF: Check rules..."
         IFS=","
