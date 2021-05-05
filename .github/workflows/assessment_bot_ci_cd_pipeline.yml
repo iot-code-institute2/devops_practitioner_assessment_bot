@@ -42,21 +42,27 @@ jobs:
 
     - name: execute assessment rules engine
       run: |
-        echo "INF: Path $(pwd)"
+        echo "\nINF: Path $(pwd)"
         ls -lrta
-        echo "INF: Rules Listing"
+        echo "\nINF: Rules Listing"
         cat rules/rules-pr.csv
 
-        echo "INF: Check rules..."
+        echo "\nINF: Check rules..."
+        grep --version
+        echo "\n"
+
         IFS=","
         while read comment check expected_result
         do
           # grep "$check" ${{env.STUDENT_CODEBASE}} || true
           # echo "INF: RST($?)"
           echo "CHECK ($check)"
+          echo "CHECK $check"
+          echo "CHECK $check"
           echo "CB (${{env.STUDENT_CODEBASE}})"
 
           grep "$check" ${{env.STUDENT_CODEBASE}} && echo "$comment : PASSED" >> grades.md || echo "$comment : FAILED" >> grades.md
+
         done < rules/rules-pr.csv
 
     - name: archive student results
