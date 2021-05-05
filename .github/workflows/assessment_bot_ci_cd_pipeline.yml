@@ -34,7 +34,6 @@ jobs:
           grep STUDENT_NAME ${{env.STUDENT_CODEBASE}} >> grade.md
 
     - name: execute assessment rules engine
-      if: always()
       run: |
         echo "INF: Path $(pwd)"
         ls -lrta
@@ -69,11 +68,11 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         rm ${{env.STUDENT_CODEBASE}}
-        rm grades.md
         git config --global user.email "tonyennis@yahoo.com"
         git config --global user.name "Anthony Ennis"
         git add .
         cat grades.md | git commit -F -
+        rm grades.md
 
   # comms_slack:
   #   needs: teacher_assessment_time
