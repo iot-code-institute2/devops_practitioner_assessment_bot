@@ -52,7 +52,7 @@ jobs:
         echo -e "\n"
 
         IFS=","
-        while read comment check expected_result
+        while read comment check grade expected_result
         do
           # grep "$check" ${{env.STUDENT_CODEBASE}} || true
           # echo "INF: RST($?)"
@@ -60,7 +60,7 @@ jobs:
           echo "Check ($check)"
           echo "Codebase under inspection (${{env.STUDENT_CODEBASE}})"
 
-          grep "$check" ${{env.STUDENT_CODEBASE}} && echo "$comment : PASSED" >> grades.md || echo "$comment : FAILED" >> grades.md
+          grep "$check" ${{env.STUDENT_CODEBASE}} && echo "$comment : PASSED($grade)" >> grades.md || echo "$comment : FAILED($grade)" >> grades.md
 
         done < rules/rules-pr.csv
 
