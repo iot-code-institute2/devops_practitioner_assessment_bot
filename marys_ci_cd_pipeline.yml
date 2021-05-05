@@ -4,6 +4,8 @@ env:
   APP_NAME: ci-ping-pong
   GEO: eu
   PIPELINE: coding-institute-pipeline
+  STUDENT_EMAIL: mary@codeinstitute.net
+  STUDENT_NAME: mary j jenkins
 jobs:
   # Master Only
   job1:
