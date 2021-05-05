@@ -58,14 +58,11 @@ jobs:
         do
           echo "Comment ($comment)"
           echo "Check1 ($check)"
-          echo "Check2 (${{env.CHECK_RT}})"
-          echo "CHECK_RT=$check" >> $GITHUB_ENV
-          echo "Check3 (${{env.CHECK_RT}})"
           echo "Grade ($grade)"
           echo "Codebase under inspection (${{env.STUDENT_CODEBASE}})"
 
-          grep "${{env.CHECK_RT}}" ${{env.STUDENT_CODEBASE}} && echo "$? $comment : PASSED($grade)" >> grades.md || echo "$? $comment : FAILED($grade)" >> grades.md
-          # grep "pip" marys_ci_cd_pipeline.yml && echo "$? $comment : PASSED($grade)" >> grades.md || echo "$? $comment : FAILED($grade)" >> grades.md
+          grep '${{env.CHECK_RT}}' ${{env.STUDENT_CODEBASE}} && echo "$? $comment : PASSED($grade)" >> grades.md || echo "$? $comment : FAILED($grade)" >> grades.md
+          cat marys_ci_cd_pipeline.yml | grep "$check" && echo "$? $comment : PASSED($grade)" >> grades.md || echo "$? $comment : FAILED($grade)" >> grades.md
 
         done < rules/rules-pr.csv
 
