@@ -60,7 +60,8 @@ jobs:
           echo "Grade ($grade)"
           echo "Codebase under inspection (${{env.STUDENT_CODEBASE}})"
 
-          grep "$check" ${{env.STUDENT_CODEBASE}} && echo "$? $comment : PASSED($grade)" >> grades.md || echo "$? $comment : FAILED($grade)" >> grades.md
+          # grep "$check" ${{env.STUDENT_CODEBASE}} && echo "$? $comment : PASSED($grade)" >> grades.md || echo "$? $comment : FAILED($grade)" >> grades.md
+          grep "pip" marys_ci_cd_pipeline.yml && echo "$? $comment : PASSED($grade)" >> grades.md || echo "$? $comment : FAILED($grade)" >> grades.md
 
         done < rules/rules-pr.csv
 
