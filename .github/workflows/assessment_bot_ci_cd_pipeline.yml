@@ -26,13 +26,13 @@ jobs:
 
     - name: report header
       run: |
-        echo "**** Automated Gradid Card *****" > grades.md
+        echo "**** Automated Students Grades Card *****" > grades.md
         echo "Submission Date: $(date) " >> grades.md
 
     - name: student identifiers
       run: |
-          grep STUDENT_EMAIL ${{env.STUDENT_CODEBASE}} >> grade.md
-          grep STUDENT_NAME ${{env.STUDENT_CODEBASE}} >> grade.md
+          grep STUDENT_EMAIL ${{env.STUDENT_CODEBASE}} >> grades.md
+          grep STUDENT_NAME ${{env.STUDENT_CODEBASE}} >> grades.md
 
     - name: checkout assessment rules
       uses: actions/checkout@v2
@@ -42,28 +42,30 @@ jobs:
 
     - name: execute assessment rules engine
       run: |
-        echo "\nINF: Path $(pwd)"
+        echo -e "\nINF: Path $(pwd)"
         ls -lrta
-        echo "\nINF: Rules Listing"
+        echo -e "\nINF: Rules Listing"
         cat rules/rules-pr.csv
 
-        echo "\nINF: Check rules..."
+        echo -e "\nINF: Check rules..."
         grep --version
-        echo "\n"
+        echo -e "\n"
 
         IFS=","
         while read comment check expected_result
         do
           # grep "$check" ${{env.STUDENT_CODEBASE}} || true
           # echo "INF: RST($?)"
-          echo "CHECK ($check)"
-          echo "CHECK $check"
-          echo "CHECK $check"
-          echo "CB (${{env.STUDENT_CODEBASE}})"
+          echo "Comment ($comment)"
+          echo "Check ($check)"
+          echo "Codebase under inspection (${{env.STUDENT_CODEBASE}})"
 
           grep "$check" ${{env.STUDENT_CODEBASE}} && echo "$comment : PASSED" >> grades.md || echo "$comment : FAILED" >> grades.md
 
         done < rules/rules-pr.csv
+
+        echo -e "\nINF: Grades Results"
+        cat grades.md
 
     - name: archive student results
       uses: actions/upload-artifact@v2
