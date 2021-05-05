@@ -61,7 +61,7 @@ jobs:
             echo "$comment : FAILED" >> grades.md
           fi
 
-        done < rules-pr.csv
+        done < rules/rules-pr.csv
 
     - name: archive student results
       uses: actions/upload-artifact@v2
