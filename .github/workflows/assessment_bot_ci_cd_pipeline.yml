@@ -33,6 +33,7 @@ jobs:
       run: |
           grep STUDENT_EMAIL ${{env.STUDENT_CODEBASE}} >> grades.md
           grep STUDENT_NAME ${{env.STUDENT_CODEBASE}} >> grades.md
+          echo "---" >> grades.md
 
     - name: checkout assessment rules
       uses: actions/checkout@v2
@@ -61,8 +62,9 @@ jobs:
           echo "Grade ($grade)"
           echo "Codebase under inspection (${{env.STUDENT_CODEBASE}})"
 
-          cat ${{env.STUDENT_CODEBASE}} | grep -c "$check" && echo "$?, $comment : Check(PASSED), Level($grade)" >> grades.md || echo "$?, $comment : Check(FAILED), Level($grade)" >> grades.md
+          cat ${{env.STUDENT_CODEBASE}} | grep -c "$check" && echo "Q. $comment? PASSED, Level($grade)" >> grades.md || echo "Q. $comment? FAILED, Level($grade)" >> grades.md
 
+          echo -e "\n"
         done < rules/rules-pr.csv
 
         echo -e "\nINF: Grades Results"
@@ -86,16 +88,16 @@ jobs:
         cat grades.md | git commit -F -
         rm grades.md
 
-  comms_slack:
-    needs: teacher_assessment_time
-    name: JOB - Slack Update
-    runs-on: ubuntu-latest
-    steps:
-    - name: notify-team
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-      env:
-        SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
-      if: always() # Pick up events even if the job fails or is canceled.
+  # comms_slack:
+  #   needs: teacher_assessment_time
+  #   name: JOB - Slack Update
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: notify-team
+  #     uses: 8398a7/action-slack@v3
+  #     with:
+  #       status: ${{ job.status }}
+  #       fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+  #     env:
+  #       SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
+  #     if: always() # Pick up events even if the job fails or is canceled.
