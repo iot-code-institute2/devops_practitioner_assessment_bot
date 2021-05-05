@@ -2,7 +2,7 @@ name: mary_ci_pipeline
 on: [push]
 
 env:
-  APP_NAME: ci-ping-pong-ping
+  APP_NAME: ci-ping-pong
   GEO: eu
   PIPELINE: coding-institute-pipeline
 
