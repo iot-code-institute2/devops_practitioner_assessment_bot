@@ -57,11 +57,11 @@ jobs:
         while read comment check grade expected_result
         do
           echo "Comment ($comment)"
-          echo "Check1 ($check)"
+          echo "Check ($check)"
           echo "Grade ($grade)"
           echo "Codebase under inspection (${{env.STUDENT_CODEBASE}})"
 
-          cat marys_ci_cd_pipeline.yml | grep "$check" && echo "$? $comment : PASSED($grade)" >> grades.md || echo "$? $comment : FAILED($grade)" >> grades.md
+          cat ${{env.STUDENT_CODEBASE}} | grep -c "$check" && echo "$?, $comment : Check(PASSED), Level($grade)" >> grades.md || echo "$?, $comment : Check(FAILED), Level($grade)" >> grades.md
 
         done < rules/rules-pr.csv
 
