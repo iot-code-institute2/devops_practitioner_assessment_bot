@@ -38,7 +38,7 @@ jobs:
         IFS=","
         while read comment check expected_result
         do
-          grep "$check" ${{env.STUDENT_CODEBASE}}
+          grep "$check" ${{env.STUDENT_CODEBASE}} || true
           echo $?
 
           if (( $? == 0 )) ; then
