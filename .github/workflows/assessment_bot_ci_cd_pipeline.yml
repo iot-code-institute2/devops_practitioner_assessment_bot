@@ -42,7 +42,7 @@ jobs:
 
     - name: execute assessment rules engine
       env:
-        CHECK: ""
+        CHECK_RT: ""
       run: |
         echo -e "\nINF: Path $(pwd)"
         ls -lrta
@@ -58,15 +58,13 @@ jobs:
         do
           echo "Comment ($comment)"
           echo "Check1 ($check)"
-          echo "Check2 (${{env.CHECK}})"
-          env.CHECK=$check
-          echo "Check3 (${{env.CHECK}})"
-          env.CHECK="$check"
-          echo "Check4 (${{env.CHECK}})"
+          echo "Check2 (${{env.CHECK_RT}})"
+          echo "CHECK_RT=$check" >> $GITHUB_ENV
+          echo "Check3 (${{env.CHECK_RT}})"
           echo "Grade ($grade)"
           echo "Codebase under inspection (${{env.STUDENT_CODEBASE}})"
 
-          grep "${{env.CHECK}}" ${{env.STUDENT_CODEBASE}} && echo "$? $comment : PASSED($grade)" >> grades.md || echo "$? $comment : FAILED($grade)" >> grades.md
+          grep "${{env.CHECK_RT}}" ${{env.STUDENT_CODEBASE}} && echo "$? $comment : PASSED($grade)" >> grades.md || echo "$? $comment : FAILED($grade)" >> grades.md
           # grep "pip" marys_ci_cd_pipeline.yml && echo "$? $comment : PASSED($grade)" >> grades.md || echo "$? $comment : FAILED($grade)" >> grades.md
 
         done < rules/rules-pr.csv
