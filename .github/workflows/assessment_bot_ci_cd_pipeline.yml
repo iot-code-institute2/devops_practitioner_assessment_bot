@@ -48,7 +48,7 @@ jobs:
           grep "$check" ${{env.STUDENT_CODEBASE}}
           echo $?
 
-          if (( $? == $expected_result )) ; then
+          if (( $? == 0 )) ; then
             echo "$comment : PASSED" >> grades.md
           else
             echo "$comment : FAILED" >> grades.md
