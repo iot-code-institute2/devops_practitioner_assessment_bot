@@ -8,6 +8,15 @@ on:
 env:
   STUDENT_CODEBASE: marys_ci_cd_pipeline.yml
   RULES_ENGINE: iot-code-institute2/rules_engline
+
+  # heroku
+  HEALTH_ENDPOINT_DEV: https://ci-ping-dev.herokuapp.com/
+  HEALTH_ENDPOINT_STAGE: https://ci-ping-stage.herokuapp.com/
+  HEALTH_ENDPOINT_PROD: https://ci-ping-prod.herokuapp.com/
+  # GitHub Actions
+  WORKFLOW_REPO: https://github.com/iot-code-institute2/devops_practitioner_assessment_bot.git
+  WORKFLOW_RUN_ID: 814592652
+
 jobs:
   teacher_assessment_time:
     # if: ${{ github.ref == 'refs/heads/main' }}
@@ -64,11 +73,25 @@ jobs:
 
           cat ${{env.STUDENT_CODEBASE}} | grep -c "$check" && echo "Q. $comment? PASSED, Level($grade)" >> grades.md || echo "Q. $comment? FAILED, Level($grade)" >> grades.md
 
+          # Overall Grade?
+
           echo -e "\n"
         done < rules/rules-pr.csv
 
         echo -e "\nINF: Grades Results"
         cat grades.md
+
+    - name: workflow failure check
+      run: |
+        lc=$(gh run view ${{env.WORKFLOW_RUN_ID}} --repo ${{env.WORKFLOW_REPO}} --log-failed | wc -l)
+        echo "INF: Line Count ($lc)"
+        [[ $lc -ge 0 ]] && echo "Q. Did workflow complete without errors? PASSED, Level(PASS)" >> grades.md || echo "Q. Did workflow complete without errors? FAILED, Level(PASS)" >> grades.md
+      env:
+        REPO: https://github.com/iot-code-institute2/devops_practitioner_assessment_bot.git
+
+    - name: health-endpoint check - dev
+      run: |
+        curl https://ci-ping-dev.herokuapp.com/
 
     - name: archive student results
       uses: actions/upload-artifact@v2
@@ -87,6 +110,14 @@ jobs:
         git add .
         cat grades.md | git commit -F -
         rm grades.md
+
+    - name: Auto-merge PRs
+      run: |
+        # gh pr merge --auto --merge "$PR_URL"
+        echo "hi"
+      env:
+        PR_URL: ${{github.event.pull_request.html_url}}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   # comms_slack:
   #   needs: teacher_assessment_time
