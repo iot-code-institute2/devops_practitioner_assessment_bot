@@ -128,21 +128,21 @@ jobs:
         [[ $lc -ge 0 ]] && echo "Q. Did workflow complete without errors? PASSED, Level(PASS)" >> grades.md || echo "Q. Did workflow complete without errors? FAILED, Level(PASS)" >> grades.md
 
     - name: health-endpoint check - ${{env.HEALTH_ENDPOINT_DEV}}
-      if: contains( env.RULE_BOOK, "cicd" )
+      if: contains( env.RULE_BOOK, 'cicd' )
       run: |
         echo "INF: HEP#2 (${{env.HEALTH_ENDPOINT_DEV}})"
         curl ${{env.HEALTH_ENDPOINT_DEV}}
         [[ $? -eq 0 ]] && echo "Q. Is Dev Health Endpoint Available? PASSED, Level(PASS)" >> grades.md || echo "Q. Is Dev Health Endpoint Available? FAILED, Level(PASS)" >> grades.md
 
     - name: health-endpoint check - ${{env.HEALTH_ENDPOINT_STAGE}}
-      if: contains( env.RULE_BOOK, "cicd" )
+      if: contains( env.RULE_BOOK, 'cicd' )
       run: |
         echo "INF: HEP#2 (${{env.HEALTH_ENDPOINT_STAGE}})"
         curl ${{env.HEALTH_ENDPOINT_STAGE}}
         [[ $? -eq 0 ]] && echo "Q. Is Stage Health Endpoint Available? PASSED, Level(PASS)" >> grades.md || echo "Q. Is Stage Health Endpoint Available? FAILED, Level(PASS)" >> grades.md
 
     - name: health-endpoint check - ${{env.HEALTH_ENDPOINT_PROD}}
-      if: contains( env.RULE_BOOK, "cicd" )
+      if: contains( env.RULE_BOOK, 'cicd' )
       run: |
         echo "INF: HEP#2 (${{env.HEALTH_ENDPOINT_PROD}})"
         curl ${{env.HEALTH_ENDPOINT_PROD}}
