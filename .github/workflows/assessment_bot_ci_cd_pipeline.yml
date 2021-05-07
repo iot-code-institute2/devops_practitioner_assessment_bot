@@ -8,6 +8,7 @@ on:
 env:
   STUDENT_CODEBASE: marys_ci_cd_pipeline.yml
   RULES_ENGINE: iot-code-institute2/rules_engline
+  HEALTH_ENDPOINT_DEV: x
 
 
 jobs:
