@@ -18,7 +18,21 @@ env:
   WORKFLOW_RUN_ID: 814592652
 
 jobs:
+  student_code_slurp:
+    name: JOB - Slurp up code!
+    runs-on: ubuntu-latest
+
+    steps:
+      name: Extract Endpoints
+      run: |
+        hep_dev=$(gh workflow view $RUN_ID --yaml --repo $WORKFLOW_REPO | awk -F: '/HEALTH_ENDPOINT_DEV/ {print $2}')
+        echo "INF: HEP#1 ($hep)"
+        echo "HEALTH_ENDPOINT_DEV=$hep_dev" >> $GITHUB_ENV
+
+
+
   teacher_assessment_time:
+    needs: student_code_slurp
     # if: ${{ github.ref == 'refs/heads/main' }}
     name: JOB - Devops Practitioner Assessment Bot
     runs-on: ubuntu-latest
@@ -86,12 +100,13 @@ jobs:
         lc=$(gh run view ${{env.WORKFLOW_RUN_ID}} --repo ${{env.WORKFLOW_REPO}} --log-failed | wc -l)
         echo "INF: Line Count ($lc)"
         [[ $lc -ge 0 ]] && echo "Q. Did workflow complete without errors? PASSED, Level(PASS)" >> grades.md || echo "Q. Did workflow complete without errors? FAILED, Level(PASS)" >> grades.md
-      env:
-        REPO: https://github.com/iot-code-institute2/devops_practitioner_assessment_bot.git
 
-    - name: health-endpoint check - dev
+    - name: health-endpoint check - ${{env.HEALTH_ENDPOINT_DEV}}
       run: |
+        echo "INF: HEP#2 (${{env.HEALTH_ENDPOINT_DEV}})"
         curl https://ci-ping-dev.herokuapp.com/
+        curl ${{env.HEALTH_ENDPOINT_DEV}}
+        [[ $? -eq 0 ]] && echo "Q. Is Dev Health Endpoint Available? PASSED, Level(PASS)" >> grades.md || echo "Q. Is Dev Health Endpoint Available? FAILED, Level(PASS)" >> grades.md
 
     - name: archive student results
       uses: actions/upload-artifact@v2
