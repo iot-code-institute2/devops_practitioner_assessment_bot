@@ -8,12 +8,11 @@ on:
 env:
   STUDENT_CODEBASE: marys_ci_cd_pipeline.yml
   RULES_ENGINE: iot-code-institute2/rules_engline
-  HEALTH_ENDPOINT_DEV: x
 
 
 jobs:
   student_workflow:
-    name: JOB - workflow slurper
+    name: JOB - Go Assessment Bot
     runs-on: ubuntu-latest
 
     steps:
@@ -63,14 +62,6 @@ jobs:
 #
 #
 
-  student_workflow2:
-    needs: student_workflow
-    name: JOB - kjalkjsdfljk
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: checkout me code
-      uses: actions/checkout@v2
     - name: report header
       run: |
         echo "INF: My Run ID  ${{ github.run_id }}"
