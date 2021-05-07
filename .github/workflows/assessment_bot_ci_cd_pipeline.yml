@@ -97,7 +97,7 @@ jobs:
         IFS=","
         while read comment check grade expected_result
         do
-          [[ "$comment" == "#" || "$comment" == "##" || "$comment" == "" ]] && continue
+          [[ "$comment" == #* || "$comment" == "" ]] && continue
 
           echo "Comment ($comment)"
           echo "Check ($check)"
