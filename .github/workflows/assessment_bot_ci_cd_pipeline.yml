@@ -10,24 +10,54 @@ env:
   RULES_ENGINE: iot-code-institute2/rules_engline
 
   # heroku
-  HEALTH_ENDPOINT_DEV: https://ci-ping-dev.herokuapp.com/
-  HEALTH_ENDPOINT_STAGE: https://ci-ping-stage.herokuapp.com/
-  HEALTH_ENDPOINT_PROD: https://ci-ping-prod.herokuapp.com/
+  HEALTH_ENDPOINT_DEV_X: https://ci-ping-dev.herokuapp.com/
+  HEALTH_ENDPOINT_STAGE_X: https://ci-ping-stage.herokuapp.com/
+  HEALTH_ENDPOINT_PROD_X: https://ci-ping-prod.herokuapp.com/
+
   # GitHub Actions
-  WORKFLOW_REPO: https://github.com/iot-code-institute2/devops_practitioner_assessment_bot.git
-  WORKFLOW_RUN_ID: 814592652
+  WORKFLOW_REPO_X: https://github.com/iot-code-institute2/devops_practitioner_assessment_bot.git
+  WORKFLOW_RUN_ID_X: 814592652
 
 jobs:
+  student_workflow:
+    name: JOB - workflow slurper
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout me code
+      uses: actions/checkout@v2
+
+    - name: Extract Workflow Items
+      run: |
+        wf_run_id=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/WORKFLOW_RUN_ID/ {print $2}')
+        echo "INF: run_id ($wf_run_id)"
+        echo "WORKFLOW_RUN_ID=$wf_run_id" >> $GITHUB_ENV
+
+        wf_repo=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/WORKFLOW_REPO/ {print $2}')
+        echo "INF: wf_repo  ($wf_repo)"
+        echo "WORKFLOW_REPO=$wf_repo" >> $GITHUB_ENV
+
+
+
   student_code_slurp:
+    needs: student_workflow
     name: JOB - Slurp up code!
     runs-on: ubuntu-latest
 
     steps:
     - name: Extract Endpoints
       run: |
-        hep_dev=$(gh workflow view $RUN_ID --yaml --repo $WORKFLOW_REPO | awk -F: '/HEALTH_ENDPOINT_DEV/ {print $2}')
-        echo "INF: HEP#1 ($hep)"
+        hep_dev=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_DEV/ {print $2}')
+        echo "INF: HEP#1 ($hep_dev)"
         echo "HEALTH_ENDPOINT_DEV=$hep_dev" >> $GITHUB_ENV
+
+        hep_stage=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_STAGE/ {print $2}')
+        echo "INF: HEP#2 ($hep_stage)"
+        echo "HEALTH_ENDPOINT_STAGE=$hep_stage" >> $GITHUB_ENV
+
+        hep_prod=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_PROD/ {print $2}')
+        echo "INF: HEP#3 ($hep_prod)"
+        echo "HEALTH_ENDPOINT_PROD=$hep_prod" >> $GITHUB_ENV
 
 
 
@@ -37,11 +67,6 @@ jobs:
     name: JOB - Devops Practitioner Assessment Bot
     runs-on: ubuntu-latest
 
-#
-#
-# Start compiling report
-#
-#
     steps:
     - name: checkout me code
       uses: actions/checkout@v2
@@ -104,9 +129,21 @@ jobs:
     - name: health-endpoint check - ${{env.HEALTH_ENDPOINT_DEV}}
       run: |
         echo "INF: HEP#2 (${{env.HEALTH_ENDPOINT_DEV}})"
-        curl https://ci-ping-dev.herokuapp.com/
         curl ${{env.HEALTH_ENDPOINT_DEV}}
         [[ $? -eq 0 ]] && echo "Q. Is Dev Health Endpoint Available? PASSED, Level(PASS)" >> grades.md || echo "Q. Is Dev Health Endpoint Available? FAILED, Level(PASS)" >> grades.md
+
+    - name: health-endpoint check - ${{env.HEALTH_ENDPOINT_STAGE}}
+      run: |
+        echo "INF: HEP#2 (${{env.HEALTH_ENDPOINT_STAGE}})"
+        curl ${{env.HEALTH_ENDPOINT_STAGE}}
+        [[ $? -eq 0 ]] && echo "Q. Is Stage Health Endpoint Available? PASSED, Level(PASS)" >> grades.md || echo "Q. Is Stage Health Endpoint Available? FAILED, Level(PASS)" >> grades.md
+
+    - name: health-endpoint check - ${{env.HEALTH_ENDPOINT_PROD}}
+      run: |
+        echo "INF: HEP#2 (${{env.HEALTH_ENDPOINT_PROD}})"
+        curl ${{env.HEALTH_ENDPOINT_PROD}}
+        [[ $? -eq 0 ]] && echo "Q. Is Prod Health Endpoint Available? PASSED, Level(PASS)" >> grades.md || echo "Q. Is Prod Health Endpoint Available? FAILED, Level(PASS)" >> grades.md
+
 
     - name: archive student results
       uses: actions/upload-artifact@v2
