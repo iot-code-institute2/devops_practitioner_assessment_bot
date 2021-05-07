@@ -16,7 +16,8 @@ env:
 
   # GitHub Actions
   WORKFLOW_REPO_X: https://github.com/iot-code-institute2/devops_practitioner_assessment_bot.git
-  WORKFLOW_RUN_ID_X: 814592652
+  # WORKFLOW_RUN_ID_X: poc_assessor_checks_ci
+  WORKFLOW_RUN_ID_X: 8759014
 
 jobs:
   student_workflow:
