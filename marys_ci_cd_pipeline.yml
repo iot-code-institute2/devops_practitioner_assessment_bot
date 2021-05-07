@@ -13,7 +13,6 @@ env:
   HEALTH_ENDPOINT_PROD: https://ci-ping-prod.herokuapp.com/
   # GitHub Actions
   WORKFLOW_REPO: https://github.com/iot-code-institute2/devops_practitioner_assessment_bot.git
-  # WORKFLOW_RUN_ID: 814592652
   WORKFLOW_RUN_ID: poc_assessor_checks_ci
 
 jobs:
