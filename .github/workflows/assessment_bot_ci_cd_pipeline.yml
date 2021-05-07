@@ -9,15 +9,6 @@ env:
   STUDENT_CODEBASE: marys_ci_cd_pipeline.yml
   RULES_ENGINE: iot-code-institute2/rules_engline
 
-  # heroku
-  HEALTH_ENDPOINT_DEV_X: https://ci-ping-dev.herokuapp.com/
-  HEALTH_ENDPOINT_STAGE_X: https://ci-ping-stage.herokuapp.com/
-  HEALTH_ENDPOINT_PROD_X: https://ci-ping-prod.herokuapp.com/
-
-  # GitHub Actions
-  WORKFLOW_REPO_X: https://github.com/iot-code-institute2/devops_practitioner_assessment_bot.git
-  WORKFLOW_RUN_ID: poc_assessor_checks_ci
-  # WORKFLOW_RUN_ID_X: 81988211
 
 jobs:
   student_workflow:
@@ -53,15 +44,15 @@ jobs:
 
     - name: Extract Endpoints
       run: |
-        hep_dev=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_DEV/ {print $2}')
+        hep_dev=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_DEV/ {print $2":"$3}')
         echo "INF: HEP#1 ($hep_dev)"
         echo "HEALTH_ENDPOINT_DEV=$hep_dev" >> $GITHUB_ENV
 
-        hep_stage=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_STAGE/ {print $2}')
+        hep_stage=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_STAGE/ {print $2":"$3}')
         echo "INF: HEP#2 ($hep_stage)"
         echo "HEALTH_ENDPOINT_STAGE=$hep_stage" >> $GITHUB_ENV
 
-        hep_prod=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_PROD/ {print $2}')
+        hep_prod=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_PROD/ {print $2":"$3}')
         echo "INF: HEP#3 ($hep_prod)"
         echo "HEALTH_ENDPOINT_PROD=$hep_prod" >> $GITHUB_ENV
 
