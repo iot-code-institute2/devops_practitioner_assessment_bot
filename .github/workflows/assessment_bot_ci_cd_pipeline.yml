@@ -68,6 +68,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: checkout me code
+      uses: actions/checkout@v2
     - name: report header
       run: |
         echo "INF: My Run ID  ${{ github.run_id }}"
