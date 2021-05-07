@@ -62,9 +62,9 @@ jobs:
 #
 #
 
-  student_workflow:
-    name: JOB - kjalkjsdfljk
+  student_workflow2:
     needs: student_workflow
+    name: JOB - kjalkjsdfljk
     runs-on: ubuntu-latest
 
     steps:
