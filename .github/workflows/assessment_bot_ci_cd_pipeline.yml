@@ -28,6 +28,12 @@ jobs:
     - name: checkout me code
       uses: actions/checkout@v2
 
+#
+#
+# Part #3
+#
+#
+
     - name: Extract Workflow Items
       run: |
         echo "INF: My Run ID  ${{ github.run_id }}"
@@ -38,6 +44,12 @@ jobs:
         wf_repo=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/WORKFLOW_REPO/ {print $2":"$3}' | awk '{ gsub(/ /,""); print }')
         echo "INF: wf_repo  ($wf_repo)"
         echo "WORKFLOW_REPO=$wf_repo" >> $GITHUB_ENV
+
+#
+#
+# Part #3
+#
+#
 
     - name: Extract Endpoints
       run: |
@@ -53,18 +65,11 @@ jobs:
         echo "INF: HEP#3 ($hep_prod)"
         echo "HEALTH_ENDPOINT_PROD=$hep_prod" >> $GITHUB_ENV
 
-
-
-  teacher_assessment_time:
-    needs: student_workflow
-    # if: ${{ github.ref == 'refs/heads/main' }}
-    name: JOB - Devops Practitioner Assessment Bot
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: checkout me code
-      uses: actions/checkout@v2
-
+#
+#
+# Part #3
+#
+#
 
     - name: report header
       run: |
