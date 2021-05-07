@@ -91,6 +91,7 @@ jobs:
 
         IFS=","
         echo "Codebase under inspection (${{env.STUDENT_CODEBASE}})"
+        echo "##########"
         while read assement_criteria check grade
         do
           [[ $assement_criteria =~ ^#.* || $assement_criteria == "" ]] && continue
@@ -123,7 +124,7 @@ jobs:
         [[ $lc -ge 0 ]] && echo "Q. Did workflow complete without errors? PASSED, Level(PASS)" >> grades.md || echo "Q. Did workflow complete without errors? FAILED, Level(PASS)" >> grades.md
 
     - name: health-endpoint check - ${{env.HEALTH_ENDPOINT_DEV}}
-      if: contains( env.RULE_BOOK, 'cicd' )
+      if: contains( env.RULE_BOOK, 'pr' )
       run: |
         echo "INF: HEP#2 (${{env.HEALTH_ENDPOINT_DEV}})"
         curl ${{env.HEALTH_ENDPOINT_DEV}}
