@@ -85,26 +85,21 @@ jobs:
       env:
         CHECK_RT: ""
       run: |
-        echo -e "\nINF: Path $(pwd)"
-        ls -lrta
         echo -e "\nINF: Rules Listing"
         cat rules/rules-pr.csv
-
-        echo -e "\nINF: Check rules..."
-        grep --version
         echo -e "\n"
 
         IFS=","
-        while read comment check grade expected_result
+        echo "Codebase under inspection (${{env.STUDENT_CODEBASE}})"
+        while read assement_criteria check grade
         do
-          [[ $comment =~ ^#.* || $comment == "" ]] && continue
+          [[ $assement_criteria =~ ^#.* || $assement_criteria == "" ]] && continue
 
-          echo "Comment ($comment)"
-          echo "Check ($check)"
-          echo "Grade ($grade)"
-          echo "Codebase under inspection (${{env.STUDENT_CODEBASE}})"
+          echo "Assement Criteria ($assement_criteria)"
+          echo "Syntax Check ($check)"
+          echo "Associated Grade ($grade)"
 
-          cat ${{env.STUDENT_CODEBASE}} | grep -c "$check" && echo "Q. $comment? PASSED, Level($grade)" >> grades.md || echo "Q. $comment? FAILED, Level($grade)" >> grades.md
+          cat ${{env.STUDENT_CODEBASE}} | grep -c "$check" && echo "Q. $assement_criteria? PASSED, Level($grade)" >> grades.md || echo "Q. $assement_criteria? FAILED, Level($grade)" >> grades.md
 
           # Overall Grade?
 
