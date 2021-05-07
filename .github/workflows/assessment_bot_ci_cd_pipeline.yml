@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      name: Extract Endpoints
+    - name: Extract Endpoints
       run: |
         hep_dev=$(gh workflow view $RUN_ID --yaml --repo $WORKFLOW_REPO | awk -F: '/HEALTH_ENDPOINT_DEV/ {print $2}')
         echo "INF: HEP#1 ($hep)"
