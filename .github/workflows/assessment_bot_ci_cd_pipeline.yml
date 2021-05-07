@@ -30,6 +30,7 @@ jobs:
 
     - name: Extract Workflow Items
       run: |
+        echo "INF: My Run ID  ${{ github.run_id }}"
         wf_run_id=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/WORKFLOW_RUN_ID/ {print $2}' | awk '{ gsub(/ /,""); print }')
         echo "INF: run_id ($wf_run_id)"
         echo "WORKFLOW_RUN_ID=$wf_run_id" >> $GITHUB_ENV
