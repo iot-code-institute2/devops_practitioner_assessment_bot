@@ -63,10 +63,10 @@ jobs:
 #
 
   student_workflow:
-    needs: student_workflow
     name: JOB - kjalkjsdfljk
+    needs: student_workflow
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: report header
       run: |
