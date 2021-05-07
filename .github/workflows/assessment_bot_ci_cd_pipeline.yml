@@ -37,14 +37,6 @@ jobs:
         echo "INF: wf_repo  ($wf_repo)"
         echo "WORKFLOW_REPO=$wf_repo" >> $GITHUB_ENV
 
-
-
-  student_code_slurp:
-    needs: student_workflow
-    name: JOB - Slurp up code!
-    runs-on: ubuntu-latest
-
-    steps:
     - name: Extract Endpoints
       run: |
         hep_dev=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_DEV/ {print $2}')
@@ -62,7 +54,7 @@ jobs:
 
 
   teacher_assessment_time:
-    needs: student_code_slurp
+    needs: student_workflow
     # if: ${{ github.ref == 'refs/heads/main' }}
     name: JOB - Devops Practitioner Assessment Bot
     runs-on: ubuntu-latest
