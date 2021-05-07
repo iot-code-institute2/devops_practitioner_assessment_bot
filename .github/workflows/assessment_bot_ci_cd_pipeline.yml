@@ -44,15 +44,15 @@ jobs:
 
     - name: Extract Endpoints
       run: |
-        hep_dev=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_DEV/ {print $2":"$3}')
+        hep_dev=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/HEALTH_ENDPOINT_DEV/ {print $2":"$3}' | awk '{ gsub(/ /,""); print }')
         echo "INF: HEP#1 ($hep_dev)"
         echo "HEALTH_ENDPOINT_DEV=$hep_dev" >> $GITHUB_ENV
 
-        hep_stage=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_STAGE/ {print $2":"$3}')
+        hep_stage=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/HEALTH_ENDPOINT_STAGE/ {print $2":"$3}' | awk '{ gsub(/ /,""); print }')
         echo "INF: HEP#2 ($hep_stage)"
         echo "HEALTH_ENDPOINT_STAGE=$hep_stage" >> $GITHUB_ENV
 
-        hep_prod=$(gh workflow view ${{env.WORKFLOW_RUN_ID}} --yaml --repo ${{env.WORKFLOW_REPO}} | awk -F: '/HEALTH_ENDPOINT_PROD/ {print $2":"$3}')
+        hep_prod=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/HEALTH_ENDPOINT_PROD/ {print $2":"$3}' | awk '{ gsub(/ /,""); print }')
         echo "INF: HEP#3 ($hep_prod)"
         echo "HEALTH_ENDPOINT_PROD=$hep_prod" >> $GITHUB_ENV
 
