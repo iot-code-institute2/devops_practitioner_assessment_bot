@@ -6,44 +6,144 @@ on:
   push:
 
 env:
-  BRANCH_REGX: v[11].[-1-10]+.[-1-10]+
   STUDENT_CODEBASE: marys_ci_cd_pipeline.yml
-  # Checks
-  ACTION_PI_SETUP: actions/setup-python
-  RUNS_ON: ubuntu-latest
+  RULES_ENGINE: iot-code-institute2/rules_engline
+  RULE_BOOK: rules/rules-pr.csv
+
 
 jobs:
-  teacher_assessment_time:
-    if: ${{ github.ref == 'refs/heads/main' }}
-    name: JOB - Devops Practitioner Assessment Bot
+  student_workflow:
+    name: JOB - Go Assessment Bot
     runs-on: ubuntu-latest
 
     steps:
     - name: checkout me code
       uses: actions/checkout@v2
 
-    - name: compile report
-      run: |
-        echo "STUDENT_EMAIL $STUDENT_EMAIL" > grades.md
-        echo "Date: $(date) " >> grades.md
+#
+#
+# Part #3
+#
+#
 
-    - name: check if python action is used.
+    - name: Extract Workflow Items
       run: |
-        grep "${{env.ACTION_PI_SETUP}}" ${{env.STUDENT_CODEBASE}}
-        if (( $? == 0 )) ; then
-          echo "PI Check : PASSED" >> grades.md
-        else
-          echo "PI Check : FAILED" >> grades.md
-        fi
+        echo "INF: My Run ID  ${{ github.run_id }}"
+        wf_run_id=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/WORKFLOW_RUN_ID/ {print $2}' | awk '{ gsub(/ /,""); print }')
+        echo "INF: run_id ($wf_run_id)"
+        echo "WORKFLOW_RUN_ID=$wf_run_id" >> $GITHUB_ENV
 
-    - name: check if runner is ubuntu
+        wf_repo=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/WORKFLOW_REPO/ {print $2":"$3}' | awk '{ gsub(/ /,""); print }')
+        echo "INF: wf_repo  ($wf_repo)"
+        echo "WORKFLOW_REPO=$wf_repo" >> $GITHUB_ENV
+
+#
+#
+# Part #3
+#
+#
+
+    - name: Extract Endpoints
       run: |
-        grep ${{env.RUNS_ON}} ${{env.STUDENT_CODEBASE}}
-        if (( $? == 0 )) ; then
-          echo "Runner Check: PASSED" >> grades.md
-        else
-          echo "Runner Check: FAILED" >> grades.md
-        fi
+        hep_dev=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/HEALTH_ENDPOINT_DEV/ {print $2":"$3}' | awk '{ gsub(/ /,""); print }')
+        echo "INF: HEP#1 ($hep_dev)"
+        echo "HEALTH_ENDPOINT_DEV=$hep_dev" >> $GITHUB_ENV
+
+        hep_stage=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/HEALTH_ENDPOINT_STAGE/ {print $2":"$3}' | awk '{ gsub(/ /,""); print }')
+        echo "INF: HEP#2 ($hep_stage)"
+        echo "HEALTH_ENDPOINT_STAGE=$hep_stage" >> $GITHUB_ENV
+
+        hep_prod=$(cat ${{env.STUDENT_CODEBASE}} | awk -F: '/HEALTH_ENDPOINT_PROD/ {print $2":"$3}' | awk '{ gsub(/ /,""); print }')
+        echo "INF: HEP#3 ($hep_prod)"
+        echo "HEALTH_ENDPOINT_PROD=$hep_prod" >> $GITHUB_ENV
+
+#
+#
+# Part #3
+#
+#
+
+    - name: report header
+      run: |
+        echo "INF: My Run ID  ${{ github.run_id }}"
+        echo "**** Automated Students Grades Card *****" > grades.md
+        echo "Submission Date: $(date) " >> grades.md
+
+    - name: student identifiers
+      run: |
+          grep STUDENT_EMAIL ${{env.STUDENT_CODEBASE}} >> grades.md
+          grep STUDENT_NAME ${{env.STUDENT_CODEBASE}} >> grades.md
+          echo "---" >> grades.md
+
+    - name: checkout assessment rules
+      uses: actions/checkout@v2
+      with:
+        repository: iot-code-institute2/rules_engline
+        path: rules
+
+    - name: execute assessment rules engine
+      env:
+        CHECK_RT: ""
+      run: |
+        echo -e "\nINF: Rules Listing"
+        cat rules/rules-pr.csv
+        echo -e "\n"
+
+        IFS=","
+        echo "Codebase under inspection (${{env.STUDENT_CODEBASE}})"
+        echo "##########"
+        while read assement_criteria check grade
+        do
+          [[ $assement_criteria =~ ^#.* || $assement_criteria == "" ]] && continue
+
+          echo "Assement Criteria ($assement_criteria)"
+          echo "Syntax Check ($check)"
+          echo "Associated Grade ($grade)"
+
+          cat ${{env.STUDENT_CODEBASE}} | grep -c "$check" && echo "Q. $assement_criteria? PASSED, Level($grade)" >> grades.md || echo "Q. $assement_criteria? FAILED, Level($grade)" >> grades.md
+
+          # Overall Grade?
+
+          echo -e "\n"
+
+        done < ${{env.RULE_BOOK}}
+
+        echo -e "\nINF: Grades Results"
+        cat grades.md
+
+    #
+    #
+    # External Checks
+    #
+    #
+
+    - name: workflow failure check
+      run: |
+        lc=$(gh run view ${{env.WORKFLOW_RUN_ID}} --repo ${{env.WORKFLOW_REPO}} --log-failed | wc -l)
+        echo "INF: Line Count ($lc)"
+        [[ $lc -ge 0 ]] && echo "Q. Did workflow complete without errors? PASSED, Level(PASS)" >> grades.md || echo "Q. Did workflow complete without errors? FAILED, Level(PASS)" >> grades.md
+
+    - name: health-endpoint check - ${{env.HEALTH_ENDPOINT_DEV}}
+      if: contains( env.RULE_BOOK, 'pr' )
+      run: |
+        echo "INF: HEP#2 (${{env.HEALTH_ENDPOINT_DEV}})"
+        curl ${{env.HEALTH_ENDPOINT_DEV}}
+        [[ $? -eq 0 ]] && echo "Q. Is Dev Health Endpoint Available? PASSED, Level(PASS)" >> grades.md || echo "Q. Is Dev Health Endpoint Available? FAILED, Level(PASS)" >> grades.md
+
+    - name: health-endpoint check - ${{env.HEALTH_ENDPOINT_STAGE}}
+      if: contains( env.RULE_BOOK, 'cicd' )
+      run: |
+        echo "INF: HEP#2 (${{env.HEALTH_ENDPOINT_STAGE}})"
+        curl ${{env.HEALTH_ENDPOINT_STAGE}}
+        [[ $? -eq 0 ]] && echo "Q. Is Stage Health Endpoint Available? PASSED, Level(PASS)" >> grades.md || echo "Q. Is Stage Health Endpoint Available? FAILED, Level(PASS)" >> grades.md
+
+    - name: health-endpoint check - ${{env.HEALTH_ENDPOINT_PROD}}
+      if: contains( env.RULE_BOOK, 'cicd' )
+      run: |
+        echo "INF: HEP#2 (${{env.HEALTH_ENDPOINT_PROD}})"
+        curl ${{env.HEALTH_ENDPOINT_PROD}}
+        [[ $? -eq 0 ]] && echo "Q. Is Prod Health Endpoint Available? PASSED, Level(PASS)" >> grades.md || echo "Q. Is Prod Health Endpoint Available? FAILED, Level(PASS)" >> grades.md
+
 
     - name: archive student results
       uses: actions/upload-artifact@v2
@@ -52,17 +152,35 @@ jobs:
         path: ./grades.md
         retention-days: 5
 
-
-  comms_slack:
-    needs: teacher_assessment_time
-    name: JOB - Slack Update
-    runs-on: ubuntu-latest
-    steps:
-    - name: notify-team
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+    - name: clean up
       env:
-        SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
-      if: always() # Pick up events even if the job fails or is canceled.
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        rm ${{env.STUDENT_CODEBASE}}
+        git config --global user.email "tonyennis@yahoo.com"
+        git config --global user.name "Anthony Ennis"
+        git add .
+        cat grades.md | git commit -F -
+        rm grades.md
+
+    - name: Auto-merge PRs
+      run: |
+        # gh pr merge --auto --merge "$PR_URL"
+        echo "hi"
+      env:
+        PR_URL: ${{github.event.pull_request.html_url}}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+  # comms_slack:
+  #   needs: teacher_assessment_time
+  #   name: JOB - Slack Update
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: notify-team
+  #     uses: 8398a7/action-slack@v3
+  #     with:
+  #       status: ${{ job.status }}
+  #       fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+  #     env:
+  #       SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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  # required
+  #     if: always() # Pick up events even if the job fails or is canceled.
