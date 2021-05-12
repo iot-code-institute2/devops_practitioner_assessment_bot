@@ -7,6 +7,13 @@ env:
   PIPELINE: coding-institute-pipeline
   STUDENT_EMAIL: mary@codeinstitute.net
   STUDENT_NAME: mary j jenkins
+  # heroku
+  HEALTH_ENDPOINT_DEV: https://ci-ping-dev.herokuapp.com/
+  HEALTH_ENDPOINT_STAGE: https://ci-ping-stage.herokuapp.com/
+  HEALTH_ENDPOINT_PROD: https://ci-ping-prod.herokuapp.com/
+  # GitHub Actions
+  WORKFLOW_REPO: https://github.com/iot-code-institute2/devops_practitioner_assessment_bot.git
+  WORKFLOW_RUN_ID: 814592652
 
 jobs:
   # Master Only
